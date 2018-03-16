@@ -1,8 +1,8 @@
 open import Relation.Binary using (DecSetoid; IsDecEquivalence)
 
-module Ratwa.List.Permutation {a ℓ} (ds : DecSetoid a ℓ) where
+module Ratwa.List.Permutation {a ℓ} (DS : DecSetoid a ℓ) where
 
-open DecSetoid ds renaming (Carrier to X) hiding (_≟_)
+open DecSetoid DS renaming (Carrier to X) hiding (_≟_)
 open IsDecEquivalence isDecEquivalence
 
 open import Level
@@ -10,7 +10,7 @@ open import Level
 open import Data.List using (_∷_; []; List)
 open import Data.List.Relation.Pointwise using (Pointwise)
 
-open import Data.List.Relation.Equality.Setoid (DecSetoid.setoid ds)
+open import Data.List.Relation.Equality.Setoid (DecSetoid.setoid DS)
 
 data [_,_]≈_ : X → List X → List X → Set ℓ where
     justCons : ∀ {x y xs ys} → x ≈ y →
@@ -18,10 +18,11 @@ data [_,_]≈_ : X → List X → List X → Set ℓ where
     later : ∀ {x y z xs xs'} → y ≈ z → 
             [ x , xs ]≈ xs' → [ x , y ∷ xs ]≈ (z ∷ xs')
 
-≈-insert : ∀ {x y xs xs'} → [ x , xs ]≈ xs' → y ≈ x → [ y , xs ]≈ xs'
-≈-insert (justCons x≈z xs≈zs) y≈x =
-    justCons (DecSetoid.trans ds y≈x x≈z) xs≈zs
-≈-insert (later z≈z' ins) y≈x = later z≈z' (≈-insert ins y≈x)
+insert-subst : ∀ {x y xs xs'} → [ x , xs ]≈ xs' → y ≈ x → [ y , xs ]≈ xs'
+insert-subst (justCons x≈z xs≈zs) y≈x =
+    justCons (DecSetoid.trans DS y≈x x≈z) xs≈zs
+insert-subst (later z≈z' [x,xs]≈xs') y≈x =
+    later z≈z' (insert-subst [x,xs]≈xs' y≈x)
 
 -- Permutation
 
@@ -30,23 +31,25 @@ data _↔_ : List X → List X → Set (a ⊔ ℓ) where
     perm-cons : ∀ {x xs ys xs'} →
                 [ x , ys ]≈ xs' → xs ↔ ys → (x ∷ xs) ↔ xs'
 
-≈-perm : ∀ {xs ys zs} → Pointwise _≈_ xs ys → xs ↔ zs → ys ↔ zs
-≈-perm Pointwise.[] perm-[] = perm-[]
-≈-perm (x~y Pointwise.∷ xs~ys) (perm-cons p perm) =
-    perm-cons (≈-insert p (DecSetoid.sym ds x~y)) (≈-perm xs~ys perm)
+↔-subst : ∀ {xs ys zs} → Pointwise _≈_ xs ys → xs ↔ zs → ys ↔ zs
+↔-subst Pointwise.[] perm-[] = perm-[]
+↔-subst (x≈y Pointwise.∷ xs≈ys) (perm-cons [x,as]≈zs xs↔as) =
+    perm-cons (insert-subst [x,as]≈zs (DecSetoid.sym DS x≈y))
+              (↔-subst xs≈ys xs↔as)
 
 ↔-id : ∀ (xs : List X) → xs ↔ xs
 ↔-id [] = perm-[]
-↔-id (x ∷ xs) = perm-cons (justCons (DecSetoid.refl ds) ≋-refl) (↔-id xs)
+↔-id (x ∷ xs) = perm-cons (justCons (DecSetoid.refl DS) ≋-refl) (↔-id xs)
 
 ↔-comm' : ∀ {x xs ys zs} → [ x , zs ]≈ ys → zs ↔ xs → ys ↔ (x ∷ xs)
-↔-comm' {ys = (y ∷ ys')} (justCons eq eqs) zsxs =
-    perm-cons (justCons (DecSetoid.sym ds eq) ≋-refl) (≈-perm eqs zsxs)
-↔-comm' (later p xzs) (perm-cons p' zsxs) =
-    perm-cons (later (DecSetoid.refl ds) (≈-insert p' (DecSetoid.sym ds p)))
-              (↔-comm' xzs zsxs)
+↔-comm' (justCons x≈y zs≈ys) zs↔xs =
+    perm-cons (justCons (DecSetoid.sym DS x≈y) ≋-refl) (↔-subst zs≈ys zs↔xs)
+↔-comm' (later z≈y [x,zs]≈ys) (perm-cons [z,as]≈xs zs↔as) =
+    perm-cons (later (DecSetoid.refl DS)
+                     (insert-subst [z,as]≈xs (DecSetoid.sym DS z≈y)))
+              (↔-comm' [x,zs]≈ys zs↔as)
 
 ↔-comm : ∀ {xs ys} → xs ↔ ys → ys ↔ xs
 ↔-comm perm-[] = perm-[]
-↔-comm (perm-cons xzs p) = ↔-comm' xzs (↔-comm p)
+↔-comm (perm-cons [x,zs]≈ys xs↔zs) = ↔-comm' [x,zs]≈ys (↔-comm xs↔zs)
 
