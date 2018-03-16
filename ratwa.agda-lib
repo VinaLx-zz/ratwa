@@ -1,3 +1,3 @@
 name: ratwa
 include: src
-
+depend: standard-library
