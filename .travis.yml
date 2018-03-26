@@ -1,5 +1,8 @@
 language: generic
 
+env:
+    - AGDA_DIR=$HOME/.agda
+
 before_install:
     - sudo apt-get -qq update
     - sudo apt-get -qq install agda-mode
