@@ -2,9 +2,10 @@ language: generic
 
 before_install:
     - sudo apt-get -qq update
-    - sudo apt-get -qq install agda-mode agda-stdlib
+    - sudo apt-get -qq install agda-mode
 
-install: true
+install:
+    - ./scripts/prepare-stdlib.sh
 
 script:
     - ./scripts/run-agda.sh
