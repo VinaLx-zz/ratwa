@@ -1,14 +1,16 @@
-language: generic
+language: haskell
 
 env:
     - AGDA_DIR=$HOME/.agda
 
 before_install:
-    - sudo apt-get -qq update
-    - sudo apt-get -qq install agda-mode
+    - cabal update
 
 install:
-    - ./scripts/prepare-stdlib.sh
+    - cabal install Agda
+
+before_script:
+    - agda --version
 
 script:
     - ./scripts/run-agda.sh
