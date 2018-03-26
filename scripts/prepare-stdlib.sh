@@ -2,7 +2,7 @@ mkdir ~/.agda && cd ~/.agda || exit 1
 
 pwd
 
-git clone https://github.com/agda/agda-stdlib.git
+agda --version
 
-echo "$HOME/.agda/agda-stdlib/standard-library.agda-lib" > libraries
+git clone https://github.com/agda/agda-stdlib.git
 
