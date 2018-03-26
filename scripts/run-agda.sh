@@ -1,6 +1,8 @@
 #! /usr/bin/env sh
 
-for i in src/Ratwa/**/*.agda; do
+agda_sources=$(find src -name "*.agda")
+
+for i in $agda_sources; do
     echo "$i"
     agda -v0 "$i"
 done
