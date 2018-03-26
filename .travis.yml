@@ -7,7 +7,7 @@ before_install:
     - cabal update
 
 install:
-    - cabal install alex happy
+    - cabal install alex happy cpphs
     - cabal install Agda
     - ./scripts/prepare-stdlib.sh
 
