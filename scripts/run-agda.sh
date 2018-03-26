@@ -1,6 +1,8 @@
 #! /usr/bin/env sh
 
-agda_sources=$(find src -name "*.agda")
+cd src || exit 1
+
+agda_sources=$(find . -name "*.agda")
 
 for i in $agda_sources; do
     echo "$i"
