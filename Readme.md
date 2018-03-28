@@ -7,7 +7,7 @@ Research Ability Training with Agda in Sun Yat-sen University.
 #### Insertion
 
 - [x] Decidable
-- [ ] conversion from/to List.Any
+- [x] conversion from/to List.Any
 
 #### Permutation
 
