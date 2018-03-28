@@ -20,7 +20,7 @@ insert→any (insHead x≈y xs≈ys) = here x≈y
 insert→any (insTail x'≈y' [x,xs]≈ys) = there (insert→any [x,xs]≈ys)
 
 any→insert : ∀ {x ys} → x ∈ ys → ∃ λ xs → [ x , xs ]≈ ys
-any→insert (here {xs = xs} x≈y) = xs , insHead x≈y ≋-refl
-any→insert (there {x = x} x∈ys) with any→insert x∈ys
-... | xs , [x,xs]≈ys = (x ∷ xs) , (insTail ≈-refl [x,xs]≈ys)
+any→insert (here x≈y) = _ , insHead x≈y ≋-refl
+any→insert (there x∈ys) with any→insert x∈ys
+... | xs , [x,xs]≈ys = (_ ∷ xs) , (insTail ≈-refl [x,xs]≈ys)
 
