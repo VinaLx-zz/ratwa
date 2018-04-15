@@ -4,7 +4,7 @@ module Ratwa.List.Permutation {a ℓ} (S : Setoid a ℓ) where
 
 open Setoid S using (_≈_) renaming (Carrier to X)
 
-open import Data.List using (_∷_; []; List)
+open import Data.List using (_∷_; []; List; partition)
 open import Data.List.Relation.Pointwise using (Pointwise)
 
 open import Ratwa.List.Permutation.Insert (S)

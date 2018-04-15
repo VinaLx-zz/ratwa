@@ -2,7 +2,7 @@ open import Relation.Binary using (Setoid)
 
 module Ratwa.List.Permutation.Insert {a ℓ} (S : Setoid a ℓ) where
 
-open import Data.List using (List; _∷_)
+open import Data.List using (List; _∷_; []; _++_)
 open import Data.List.Relation.Pointwise using (Pointwise)
 open import Data.List.Relation.Equality.Setoid (S)
     using (≋-refl; ≋-sym; ≋-trans)
@@ -18,6 +18,10 @@ data [_,_]≈_ : X → List X → List X → Set ℓ where
                Pointwise _≈_ xs ys → [ x , xs ]≈ (y ∷ ys)
     insTail : ∀ {x y z xs xs'} → y ≈ z → 
             [ x , xs ]≈ xs' → [ x , y ∷ xs ]≈ (z ∷ xs')
+
+insert : ∀ (x : X) → (ys zs : List X) → [ x , (ys ++ zs) ]≈ (ys ++ x ∷ zs)
+insert x [] zs = insHead ≈-refl ≋-refl
+insert x (y ∷ ys) zs = insTail ≈-refl (insert x ys zs)
 
 insert-subst₁ : ∀ {x y xs xs'} → x ≈ y → [ x , xs ]≈ xs' → [ y , xs ]≈ xs'
 insert-subst₁ x≈y (insHead x≈z xs≈zs) =
