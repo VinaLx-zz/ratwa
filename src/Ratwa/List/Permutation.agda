@@ -13,20 +13,21 @@ open import Level using (_⊔_)
 
 -- permutation
 
+infix 4 _↔_
+
 data _↔_ : List X → List X → Set (a ⊔ ℓ) where
-    perm-[] : [] ↔ []
-    perm-cons : ∀ {x xs ys xs'} →
+    ↔-[] : [] ↔ []
+    _∷-↔_ : ∀ {x xs ys xs'} →
                 [ x , ys ]≈ xs' → xs ↔ ys → (x ∷ xs) ↔ xs'
 
 -- substitution (rewriting) in terms of Pointwise _≈_
 
 ↔-subst₁ : ∀ {xs ys zs} → Pointwise _≈_ xs ys → xs ↔ zs → ys ↔ zs
-↔-subst₁ Pointwise.[] perm-[] = perm-[]
-↔-subst₁ (x≈y Pointwise.∷ xs≈ys) (perm-cons [x,as]≈zs xs↔as) =
-    perm-cons (insert-subst₁ x≈y [x,as]≈zs) (↔-subst₁ xs≈ys xs↔as)
+↔-subst₁ Pointwise.[] ↔-[] = ↔-[]
+↔-subst₁ (x≈y Pointwise.∷ xs≈ys) ([x,as]≈zs ∷-↔ xs↔as) =
+    insert-subst₁ x≈y [x,as]≈zs ∷-↔ ↔-subst₁ xs≈ys xs↔as
 
 ↔-subst₂ : ∀ {xs ys zs} → Pointwise _≈_ ys zs → xs ↔ ys → xs ↔ zs
 ↔-subst₂ Pointwise.[] xs↔ys = xs↔ys
-↔-subst₂ ys≈zs (perm-cons [x,as]≈ys xs↔as) =
-    perm-cons (insert-subst₃ ys≈zs [x,as]≈ys) xs↔as
+↔-subst₂ ys≈zs ([x,as]≈ys ∷-↔ xs↔as) = insert-subst₃ ys≈zs [x,as]≈ys ∷-↔ xs↔as
 

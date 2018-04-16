@@ -17,7 +17,7 @@ open import Relation.Binary.PropositionalEquality using (refl; sym; inspect; [_]
 
 open import Ratwa.List.Permutation (S)
 open import Ratwa.List.Permutation.Insert (S)
-open import Ratwa.List.Permutation.Setoid (S) using (↔-trans) 
+open import Ratwa.List.Permutation.Setoid (S) using (↔-trans)
 open import Ratwa.List.Permutation.Concat (S) using (partition-↔-++; ↔-++)
 open import Ratwa.List.Compare (dt)
 open import Ratwa.List.Compare.Properties (dt)
@@ -35,18 +35,18 @@ quickSort (x ∷ xs) =
 
 {-# TERMINATING #-}
 quickSortPermuted : ∀ (xs : List X) → xs ↔ quickSort xs
-quickSortPermuted ([]) = perm-[]
+quickSortPermuted ([]) = ↔-[]
 quickSortPermuted (x ∷ xs)
     with partition (λ y → y ≤? x) xs | inspect (partition (λ y → y ≤? x)) xs
 ... | l , r | [ pe ] with quickSort l | inspect quickSort l
                         | quickSort r | inspect quickSort r
 ... | sl | [ refl ] | sr | [ refl ] =
     -- [ x , (sl ++ sr) ]≈ (sl ++ x ∷ sr)
-    perm-cons (insert x sl sr) (↔-trans
-            -- xs ↔ (l ++ r)
-            (partition-↔-++ (sym pe))
-            -- (l ++ r) ↔ (sl ++ sr)
-            (↔-++ (quickSortPermuted l) (quickSortPermuted r)))
+    (insert x sl sr) ∷-↔ (↔-trans
+        -- xs ↔ (l ++ r)
+        (partition-↔-++ (sym pe))
+        -- (l ++ r) ↔ (sl ++ sr)
+        (↔-++ (quickSortPermuted l) (quickSortPermuted r)))
 
 {-# TERMINATING #-}
 quickSortMonotone : ∀ (xs : List X) → Monotone (quickSort xs)
@@ -65,6 +65,6 @@ quickSortMonotone (x ∷ xs)
 verifiedQuickSort : VerifiedSort
 verifiedQuickSort =
     record { sort = quickSort
-           ; monotone = quickSortMonotone 
+           ; monotone = quickSortMonotone
            ; permutation = quickSortPermuted }
 

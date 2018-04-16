@@ -46,8 +46,8 @@ _*≤≤*_ : ∀ {xs m ys} → xs *≤ m → m ≤* ys → xs *≤* ys
     trans x≤x'' (reflexive x''≈y) ≤*-∷ ≤*-insert x≤x' x≤*xs [x',xs]≈ys
 
 ≤*-↔ : ∀ {x xs ys} → x ≤* xs → xs ↔ ys → x ≤* ys
-≤*-↔ ≤*-[] perm-[] = ≤*-[]
-≤*-↔ (x≤x' ≤*-∷ x≤*xs) (perm-cons [x',zs]≈ys xs↔zs) =
+≤*-↔ ≤*-[] ↔-[] = ≤*-[]
+≤*-↔ (x≤x' ≤*-∷ x≤*xs) ([x',zs]≈ys ∷-↔ xs↔zs) =
     ≤*-insert x≤x' (≤*-↔ x≤*xs xs↔zs) [x',zs]≈ys
 
 *≤-subst : ∀ {xs ys x} → xs *≤ x → Pointwise _≈_ xs ys → ys *≤ x
@@ -63,8 +63,8 @@ _*≤≤*_ : ∀ {xs m ys} → xs *≤ m → m ≤* ys → xs *≤* ys
         ∷-*≤ (*≤-insert x'≤x xs*≤x [x',xs]≈ys)
 
 *≤-↔ : ∀ {x xs ys} → xs *≤ x → xs ↔ ys → ys *≤ x
-*≤-↔ xs*≤x perm-[] = *≤-[]
-*≤-↔ (x'≤x ∷-*≤ xs*≤x) (perm-cons [x',zs]≈ys xs↔zs) = *≤-insert x'≤x (*≤-↔ xs*≤x xs↔zs) [x',zs]≈ys
+*≤-↔ xs*≤x ↔-[] = *≤-[]
+*≤-↔ (x'≤x ∷-*≤ xs*≤x) ([x',zs]≈ys ∷-↔ xs↔zs) = *≤-insert x'≤x (*≤-↔ xs*≤x xs↔zs) [x',zs]≈ys
 
 infix 4 _≤*-++_
 _≤*-++_ : ∀ {x xs ys} → x ≤* xs → x ≤* ys → x ≤* xs ++ ys
