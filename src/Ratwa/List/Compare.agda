@@ -17,7 +17,7 @@ total-elim {x} {y} ¬x≤y with total x y
 ... | inj₂ y≤x = y≤x
 
 infix 4 _≤*_ _*≤*_ _*≤_
-infix 3 _≤*-∷_ _∷-*≤*_ _∷-*≤_
+infix 3 _≤*-∷_ _∷-*≤*_ _∷-*≤_ _*≤*-∷_
 
 data _≤*_ (x : X) : List X → Set (a ⊔ ℓ₂) where
     ≤*-[] : x ≤* []

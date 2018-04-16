@@ -16,5 +16,8 @@ Research Ability Training with Agda in Sun Yat-sen University.
 
 ### Sorting
 
-- [ ] QuickSort
+#### QuickSort
+
+- [x] Permutation
+- [x] Monotone
 

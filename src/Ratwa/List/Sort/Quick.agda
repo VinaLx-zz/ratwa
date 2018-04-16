@@ -34,9 +34,9 @@ quickSort (x ∷ xs) =
 
 
 {-# TERMINATING #-}
-quickSort-↔ : ∀ (xs : List X) → xs ↔ quickSort xs
-quickSort-↔ ([]) = perm-[]
-quickSort-↔ (x ∷ xs)
+quickSortPermuted : ∀ (xs : List X) → xs ↔ quickSort xs
+quickSortPermuted ([]) = perm-[]
+quickSortPermuted (x ∷ xs)
     with partition (λ y → y ≤? x) xs | inspect (partition (λ y → y ≤? x)) xs
 ... | l , r | [ pe ] with quickSort l | inspect quickSort l
                         | quickSort r | inspect quickSort r
@@ -46,18 +46,25 @@ quickSort-↔ (x ∷ xs)
             -- xs ↔ (l ++ r)
             (partition-↔-++ (sym pe))
             -- (l ++ r) ↔ (sl ++ sr)
-            (↔-++ (quickSort-↔ l) (quickSort-↔ r)))
+            (↔-++ (quickSortPermuted l) (quickSortPermuted r)))
 
-quickSort-monotone : ∀ (xs : List X) → Monotone (quickSort xs)
-quickSort-monotone [] = ↗-[]
-quickSort-monotone (x ∷ xs)
+{-# TERMINATING #-}
+quickSortMonotone : ∀ (xs : List X) → Monotone (quickSort xs)
+quickSortMonotone [] = ↗-[]
+quickSortMonotone (x ∷ xs)
     with partition (λ y → y ≤? x) xs | inspect (partition (λ y → y ≤? x)) xs
-... | l , r | [ pe ] with quickSort l | inspect quickSort l
-                        | quickSort r | inspect quickSort r
-...   | sl | [ refl ] | sr | [ refl ] = ?
+... | l , r | [ pe ] with partition-*≤≤* {xs} {x} {l} {r} (sym pe)
+...     | l*≤x , x≤*r = monotone-++ (quickSortMonotone l)
+            (x≤*sr ↗-∷ (quickSortMonotone r))
+            (sl*≤x *≤*-∷ sl*≤x *≤≤* x≤*sr)
+            where sl*≤x : quickSort l *≤ x
+                  sl*≤x = *≤-↔ l*≤x (quickSortPermuted l)
+                  x≤*sr : x ≤* quickSort r
+                  x≤*sr = ≤*-↔ x≤*r (quickSortPermuted r)
 
-soundness : VerifiedSort
-soundness =
+verifiedQuickSort : VerifiedSort
+verifiedQuickSort =
     record { sort = quickSort
-           ; monotone = quickSort-monotone 
-           ; permutation = quickSort-↔ }
+           ; monotone = quickSortMonotone 
+           ; permutation = quickSortPermuted }
+
