@@ -43,10 +43,12 @@ quickSort-↔ (x ∷ xs) with partition (_≤?_ x) xs | inspect (partition (_≤
             -- (l ++ r) ↔ (sl ++ sr)
             (↔-++ (quickSort-↔ l) (quickSort-↔ r)))
 
-quickSort-sorted : ∀ (xs : List X) → Sorted (quickSort xs)
-quickSort-sorted [] = s[]
-quickSort-sorted (x ∷ xs) = ?
+quickSort-monotone : ∀ (xs : List X) → Monotone (quickSort xs)
+quickSort-monotone [] = ↗-[]
+quickSort-monotone (x ∷ xs) = ?
 
-soundness : IsSound quickSort
-soundness = record { permutation = quickSort-↔
-                   ; sorted = quickSort-sorted }
+soundness : VerifiedSort
+soundness =
+    record { sort = quickSort
+           ; monotone = quickSort-monotone 
+           ; permutation = quickSort-↔ }

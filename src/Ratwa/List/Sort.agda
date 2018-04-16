@@ -3,41 +3,46 @@ open import Relation.Binary using (DecTotalOrder; Setoid)
 module Ratwa.List.Sort {a ℓ₁ ℓ₂} (dt : DecTotalOrder a ℓ₁ ℓ₂) where
 
 open DecTotalOrder dt renaming (Carrier to X) using
-    (_≈_; _≤_; _≤?_; isEquivalence)
+    (_≈_; _≤_; isEquivalence)
 
 open import Level
-open import Data.List using (List ; _∷_ ; [] ; partition ; _++_)
+open import Data.List using (List ; _∷_ ; [] ; _++_)
 
 private
     S : Setoid a ℓ₁
     S = record { Carrier = X; _≈_ = _≈_; isEquivalence = isEquivalence }
 
 open import Ratwa.List.Permutation (S)
-open import Ratwa.List.Permutation.Insert (S)
 
-data _≤[]_ (x : X) : List X → Set (a ⊔ ℓ₂) where
-    ≤[]-[] : x ≤[] []
-    ≤[]-cons : ∀ {x' xs} → x ≤ x' → x ≤[] xs → x ≤[] (x' ∷ xs)
+infix 4 _≤*_ _*≤*_
+infix 3 _≤*-∷_ _*≤*-∷_ _↗-∷_
 
-data Sorted : List X → Set (a ⊔ ℓ₂) where
-    s[] : Sorted []
-    _s∷_ : ∀ {x xs} → x ≤[] xs → Sorted xs → Sorted (x ∷ xs)
+data _≤*_ (x : X) : List X → Set (a ⊔ ℓ₂) where
+    ≤*-[] : x ≤* []
+    _≤*-∷_ : ∀ {x' xs} → x ≤ x' → x ≤* xs → x ≤* (x' ∷ xs)
 
-++-≤[] : ∀ {x xs ys} → x ≤[] xs → x ≤[] ys → x ≤[] (xs ++ ys)
-++-≤[] ≤[]-[] x≤[]ys = x≤[]ys
-++-≤[] (≤[]-cons x≤x' x≤xs) x≤[]ys = ≤[]-cons x≤x' (++-≤[] x≤xs x≤[]ys)
+data _*≤*_ : List X → List X → Set (a ⊔ ℓ₂) where
+    *≤*-[] : ∀ {xs} → [] *≤* xs
+    _*≤*-∷_ : ∀ {x xs ys} → x ≤* ys → xs *≤* ys → (x ∷ xs) *≤* ys
 
-data _[]≤[]_ : List X → List X → Set (a ⊔ ℓ₂) where
-    []≤[]-[] : ∀ {xs} → [] []≤[] xs
-    []≤[]-cons : ∀ {x xs ys} → x ≤[] ys → xs []≤[] ys → (x ∷ xs) []≤[] ys
+data Monotone : List X → Set (a ⊔ ℓ₂) where
+    ↗-[] : Monotone []
+    _↗-∷_ : ∀ {x xs} → x ≤* xs → Monotone xs → Monotone (x ∷ xs)
 
-++-sorted : ∀ {xs ys} → Sorted xs → Sorted ys → xs []≤[] ys → Sorted (xs ++ ys)
-++-sorted s[] ys xs[]≤[]ys = ys
-++-sorted (x≤[]xs s∷ xs) ys ([]≤[]-cons x≤[]ys xs[]≤[]ys) =
-    ++-≤[] x≤[]xs x≤[]ys s∷ ++-sorted xs ys xs[]≤[]ys
+infix 4 _≤*-++_
+_≤*-++_ : ∀ {x xs ys} → x ≤* xs → x ≤* ys → x ≤* (xs ++ ys)
+_≤*-++_ ≤*-[] x≤*ys = x≤*ys
+_≤*-++_ (x≤x' ≤*-∷ x≤*xs) x≤*ys = x≤x' ≤*-∷ x≤*xs ≤*-++ x≤*ys
 
-record IsSound (sort : List X → List X) : Set (a ⊔ ℓ₁ ⊔ ℓ₂) where
-    field
-      permutation : ∀ (xs : List X) → xs ↔ sort xs
-      sorted : ∀ (xs : List X) → Sorted (sort xs)
+monotone-++ : ∀ {xs ys} → Monotone xs → Monotone ys
+              → xs *≤* ys → Monotone (xs ++ ys)
+monotone-++ ↗-[] ys xs*≤*ys = ys
+monotone-++ (x≤*xs ↗-∷ xs) ys (x≤*ys *≤*-∷ xs*≤*ys) =
+    x≤*xs ≤*-++ x≤*ys ↗-∷ monotone-++ xs ys xs*≤*ys
+
+record VerifiedSort : Set (a ⊔ ℓ₁ ⊔ ℓ₂) where
+  field
+    sort : List X → List X
+    monotone : ∀ (xs : List X) → Monotone (sort xs)
+    permutation : ∀ (xs : List X) → xs ↔ sort xs
 
