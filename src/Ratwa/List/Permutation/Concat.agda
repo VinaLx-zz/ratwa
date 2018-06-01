@@ -7,7 +7,7 @@ open Setoid S renaming (Carrier to X; refl to ≈-refl) hiding (sym)
 open import Ratwa.List.Permutation (S) using (↔-[]; _∷-↔_; _↔_)
 open import Ratwa.List.Permutation.Insert (S)
 open import Ratwa.List.Permutation.Insert.Concat (S) using (insert-++ʳ)
-open import Ratwa.List.Permutation.Setoid (S) using (↔-sym)
+open import Ratwa.List.Permutation.Setoid (S) using (↔-sym; ↔-refl)
 
 open import Data.List using (_∷_; []; List; partition; _++_)
 open import Data.List.Relation.Equality.Setoid (S)
@@ -45,3 +45,5 @@ partition-↔-++ {x ∷ xs} {p? = p} eq | no ¬px | ys , zs | [ pp ]
     (_∷-↔_ {ys = zs₁} [x₁,zs₁]≈ys₁ xs₁↔zs₁) xs₂↔ys₂ =
     insert-++ʳ {ys₂} [x₁,zs₁]≈ys₁ ≋-refl ∷-↔ ↔-++ xs₁↔zs₁ xs₂↔ys₂
 
+insert-↔ : ∀ {x : X} {xs ys : List X} → x ∷ xs ++ ys ↔ xs ++ x ∷ ys
+insert-↔ {x} {xs} {ys} = (insert x xs ys) ∷-↔ ↔-refl
