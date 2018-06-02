@@ -12,10 +12,7 @@ open import Data.Product using (_,_)
 open import Relation.Binary.PropositionalEquality using (refl; sym; inspect; [_])
 
 open import Ratwa.List.Permutation.All (S)
-
-open import Ratwa.List.Compare (dt)
-open import Ratwa.List.Compare.Properties (dt)
-open import Ratwa.List.Compare.Monotone (dt)
+open import Ratwa.List.Compare.All (dt)
 open import Ratwa.List.Sorting (dt)
 
 
