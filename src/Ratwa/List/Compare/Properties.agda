@@ -2,12 +2,9 @@ open import Relation.Binary using (DecTotalOrder; Setoid)
 
 module Ratwa.List.Compare.Properties {a ℓ₁ ℓ₂} (dt : DecTotalOrder a ℓ₁ ℓ₂) where
 
-open DecTotalOrder dt renaming (Carrier to X) using
-    (_≈_; _≤_; _≤?_; isEquivalence; trans; reflexive)
-
-private
-    S : Setoid a ℓ₁
-    S = record { Carrier = X; _≈_ = _≈_; isEquivalence = isEquivalence }
+open DecTotalOrder dt renaming (Carrier to X; module Eq to DE) using
+    (_≈_; _≤_; _≤?_; trans; reflexive)
+open DE using () renaming (setoid to S)
 
 open Setoid S renaming (sym to ≈-sym) using ()
 
@@ -40,6 +37,11 @@ _*≤≤*_ : ∀ {xs m ys} → xs *≤ m → m ≤* ys → xs *≤* ys
 ≤*-subst x≤*xs ≋-[] = ≤*-[]
 ≤*-subst (x≤x' ≤*-∷ x≤*xs) (x'≈y ≋-∷ xs≋ys) =
     trans x≤x' (reflexive x'≈y) ≤*-∷ ≤*-subst x≤*xs xs≋ys
+
+≤*-subst₂ : ∀ {x y xs} → x ≤* xs → x ≈ y → y ≤* xs
+≤*-subst₂ ≤*-[] x≈y = ≤*-[]
+≤*-subst₂ (x≤x' ≤*-∷ x≤*xs) x≈y =
+    (trans (reflexive (≈-sym x≈y)) x≤x') ≤*-∷ ≤*-subst₂ x≤*xs x≈y
 
 ≤*-insert : ∀ {x x' xs ys} → x ≤ x' → x ≤* xs → [ x' , xs ]≈ ys → x ≤* ys
 ≤*-insert x≤x' x≤*xs (insHead x'≈y xs≋ys) =
