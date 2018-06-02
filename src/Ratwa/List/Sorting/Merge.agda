@@ -1,6 +1,6 @@
 open import Relation.Binary using (DecTotalOrder; Setoid)
 
-module Ratwa.List.Sort.Merge {a ℓ₁ ℓ₂} (dt : DecTotalOrder a ℓ₁ ℓ₂) where
+module Ratwa.List.Sorting.Merge {a ℓ₁ ℓ₂} (dt : DecTotalOrder a ℓ₁ ℓ₂) where
 
 open DecTotalOrder dt
     renaming (Carrier to X)
@@ -10,13 +10,15 @@ private
     S : Setoid a ℓ₁
     S = record { Carrier = X; _≈_ = _≈_; isEquivalence = isEquivalence }
 
-open Setoid S renaming
-    (refl to ≈-refl; sym to ≈-sym; trans to ≈-trans)
+open Setoid S
+    renaming (refl to ≈-refl; sym to ≈-sym; trans to ≈-trans)
 
 open import Data.Empty
-open import Data.List using (List ; _∷_ ; []; splitAt; length; _++_)
+open import Data.List
+    using (List ; _∷_ ; []; splitAt; length; _++_)
 open import Data.List.Properties using (++-identityʳ)
-open import Data.List.Relation.Pointwise hiding (refl) renaming (_∷_ to _≋-∷_; [] to ≋-[])
+open import Data.List.Relation.Pointwise
+    hiding (refl) renaming (_∷_ to _≋-∷_; [] to ≋-[])
 open import Data.List.Relation.Equality.Setoid (S)
     using (_≋_; ≋-refl; ≋-sym; ≋-trans)
 open import Data.Product using (_,_; _×_)
@@ -29,10 +31,11 @@ open import Ratwa.List.Permutation.Insert (S)
 open import Ratwa.List.Permutation.Setoid (S)
 open import Ratwa.List.Permutation.Concat (S)
 open import Ratwa.List.Compare.Monotone (dt)
-open import Ratwa.List.Sort (dt)
+open import Ratwa.List.Sorting (dt)
 open import Ratwa.List.Compare (dt)
 
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; inspect; [_])
+open import Relation.Binary.PropositionalEquality
+    using (_≡_; refl; sym; inspect; [_])
 
 
 merge : List X → List X → List X
@@ -86,7 +89,9 @@ merge-↔ (x ∷ xs) (y ∷ ys) with
 ...   | no ¬x≤y | no ¬y≤x = ⊥-elim (¬y≤x (total-elim ¬x≤y))
 ...   | yes x≤y | yes y≤x = ⊥-elim (¬x≈y (antisym x≤y y≤x))
 ...   | yes x≤y | no ¬y≤x = insHead ≈-refl ≋-refl ∷-↔ merge-↔ xs (y ∷ ys)
-...   | no ¬x≤y | yes y≤x = ↔-trans (↔-sym (insert-↔ {y} {x ∷ xs} {ys})) (insHead ≈-refl ≋-refl ∷-↔ merge-↔ (x ∷ xs) ys)
+...   | no ¬x≤y | yes y≤x =
+        ↔-trans (↔-sym (insert-↔ {y} {x ∷ xs} {ys}))
+                (insHead ≈-refl ≋-refl ∷-↔ merge-↔ (x ∷ xs) ys)
 
 
 halfPartition : List X → List X × List X

@@ -1,6 +1,6 @@
 open import Relation.Binary using (DecTotalOrder; Setoid)
 
-module Ratwa.List.Sort {a ℓ₁ ℓ₂} (dt : DecTotalOrder a ℓ₁ ℓ₂) where
+module Ratwa.List.Sorting {a ℓ₁ ℓ₂} (dt : DecTotalOrder a ℓ₁ ℓ₂) where
 
 open DecTotalOrder dt renaming (Carrier to X) using
     (_≈_; _≤_; isEquivalence)

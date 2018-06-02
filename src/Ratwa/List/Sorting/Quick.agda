@@ -1,9 +1,9 @@
 open import Relation.Binary using (DecTotalOrder; Setoid)
 
-module Ratwa.List.Sort.Quick {a ℓ₁ ℓ₂} (dt : DecTotalOrder a ℓ₁ ℓ₂) where
+module Ratwa.List.Sorting.Quick {a ℓ₁ ℓ₂} (dt : DecTotalOrder a ℓ₁ ℓ₂) where
 
 open DecTotalOrder dt renaming (Carrier to X) using
-    (_≈_; _≤_; _≤?_; isEquivalence; total)
+    (_≈_; _≤_; _≤?_; isEquivalence)
 
 private
     S : Setoid a ℓ₁
@@ -22,7 +22,7 @@ open import Ratwa.List.Permutation.Concat (S) using (partition-↔-++; ↔-++)
 open import Ratwa.List.Compare (dt)
 open import Ratwa.List.Compare.Properties (dt)
 open import Ratwa.List.Compare.Monotone (dt)
-open import Ratwa.List.Sort (dt)
+open import Ratwa.List.Sorting (dt)
 
 
 {-# TERMINATING #-}
@@ -35,7 +35,7 @@ quickSort (x ∷ xs) =
 
 {-# TERMINATING #-}
 quickSortPermuted : ∀ (xs : List X) → xs ↔ quickSort xs
-quickSortPermuted ([]) = ↔-[]
+quickSortPermuted [] = ↔-[]
 quickSortPermuted (x ∷ xs)
     with partition (λ y → y ≤? x) xs | inspect (partition (λ y → y ≤? x)) xs
 ... | l , r | [ pe ] with quickSort l | inspect quickSort l
