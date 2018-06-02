@@ -5,9 +5,8 @@ module Ratwa.List.Permutation.Concat {a ℓ} (S : Setoid a ℓ) where
 open Setoid S renaming (Carrier to X; refl to ≈-refl) hiding (sym)
 
 open import Ratwa.List.Permutation (S) using (↔-[]; _∷-↔_; _↔_)
-open import Ratwa.List.Permutation.Insert (S)
-open import Ratwa.List.Permutation.Insert.Concat (S) using (insert-++ʳ)
 open import Ratwa.List.Permutation.Setoid (S) using (↔-sym; ↔-refl)
+open import Ratwa.List.Permutation.Insert.All (S)
 
 open import Data.List using (_∷_; []; List; partition; _++_)
 open import Data.List.Relation.Equality.Setoid (S)

@@ -13,7 +13,9 @@ open Setoid S renaming (sym to ≈-sym) using ()
 
 open import Level
 open import Data.List using (List ; _∷_ ; [] ; _++_; partition)
-open import Data.List.Relation.Pointwise using (Pointwise)
+open import Data.List.Relation.Pointwise
+    using () renaming ([] to ≋-[]; _∷_ to _≋-∷_)
+open import Data.List.Relation.Equality.Setoid (S) using (_≋_)
 open import Data.Product using (_,_; _×_)
 open import Data.Product.Properties using (,-injectiveˡ; ,-injectiveʳ)
 
@@ -34,9 +36,9 @@ _*≤≤*_ : ∀ {xs m ys} → xs *≤ m → m ≤* ys → xs *≤* ys
 *≤-[] *≤≤* _ = *≤*-[]
 (x≤m ∷-*≤ xs*≤m) *≤≤* m≤*ys = (x≤m ≤≤* m≤*ys) ∷-*≤* (xs*≤m *≤≤* m≤*ys)
 
-≤*-subst : ∀ {xs ys x} → x ≤* xs → Pointwise _≈_ xs ys → x ≤* ys
-≤*-subst x≤*xs Pointwise.[] = ≤*-[]
-≤*-subst (x≤x' ≤*-∷ x≤*xs) (x'≈y Pointwise.∷ xs≋ys) =
+≤*-subst : ∀ {xs ys x} → x ≤* xs → xs ≋ ys → x ≤* ys
+≤*-subst x≤*xs ≋-[] = ≤*-[]
+≤*-subst (x≤x' ≤*-∷ x≤*xs) (x'≈y ≋-∷ xs≋ys) =
     trans x≤x' (reflexive x'≈y) ≤*-∷ ≤*-subst x≤*xs xs≋ys
 
 ≤*-insert : ∀ {x x' xs ys} → x ≤ x' → x ≤* xs → [ x' , xs ]≈ ys → x ≤* ys
@@ -50,9 +52,9 @@ _*≤≤*_ : ∀ {xs m ys} → xs *≤ m → m ≤* ys → xs *≤* ys
 ≤*-↔ (x≤x' ≤*-∷ x≤*xs) ([x',zs]≈ys ∷-↔ xs↔zs) =
     ≤*-insert x≤x' (≤*-↔ x≤*xs xs↔zs) [x',zs]≈ys
 
-*≤-subst : ∀ {xs ys x} → xs *≤ x → Pointwise _≈_ xs ys → ys *≤ x
-*≤-subst xs*≤x Pointwise.[] = *≤-[]
-*≤-subst (x'≤x ∷-*≤ xs*≤x) (x'≈y Pointwise.∷ xs≋ys) =
+*≤-subst : ∀ {xs ys x} → xs *≤ x → xs ≋ ys → ys *≤ x
+*≤-subst xs*≤x ≋-[] = *≤-[]
+*≤-subst (x'≤x ∷-*≤ xs*≤x) (x'≈y ≋-∷ xs≋ys) =
     (trans (reflexive (≈-sym x'≈y)) x'≤x) ∷-*≤ (*≤-subst xs*≤x xs≋ys)
 
 *≤-insert : ∀ {x x' xs ys} → x' ≤ x → xs *≤ x → [ x' , xs ]≈ ys → ys *≤ x

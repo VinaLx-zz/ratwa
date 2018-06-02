@@ -6,7 +6,6 @@ open Setoid S using (_≈_) renaming
     (Carrier to X; refl to ≈-refl; sym to ≈-sym; trans to ≈-trans)
 
 open import Data.List using (_∷_; []; List)
-open import Data.List.Relation.Pointwise using (Pointwise)
 open import Data.List.Relation.Equality.Setoid (S)
     using (≋-refl; ≋-sym; ≋-trans)
 

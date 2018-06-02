@@ -2,23 +2,17 @@ open import Relation.Binary using (DecTotalOrder; Setoid)
 
 module Ratwa.List.Sorting.Quick {a ℓ₁ ℓ₂} (dt : DecTotalOrder a ℓ₁ ℓ₂) where
 
-open DecTotalOrder dt renaming (Carrier to X) using
+open DecTotalOrder dt renaming (Carrier to X; module Eq to DE) using
     (_≈_; _≤_; _≤?_; isEquivalence)
-
-private
-    S : Setoid a ℓ₁
-    S = record { Carrier = X; _≈_ = _≈_; isEquivalence = isEquivalence }
+open DE using () renaming (setoid to S)
 
 open import Data.List using (List ; _∷_ ; [] ; partition ; _++_)
-
 open import Data.Product using (_,_)
 
 open import Relation.Binary.PropositionalEquality using (refl; sym; inspect; [_])
 
-open import Ratwa.List.Permutation (S)
-open import Ratwa.List.Permutation.Insert (S)
-open import Ratwa.List.Permutation.Setoid (S) using (↔-trans)
-open import Ratwa.List.Permutation.Concat (S) using (partition-↔-++; ↔-++)
+open import Ratwa.List.Permutation.All (S)
+
 open import Ratwa.List.Compare (dt)
 open import Ratwa.List.Compare.Properties (dt)
 open import Ratwa.List.Compare.Monotone (dt)

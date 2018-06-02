@@ -1,9 +1,7 @@
-open import Relation.Binary using (DecTotalOrder; Setoid)
+open import Relation.Binary using (DecTotalOrder)
 
 module Ratwa.List.Compare.Monotone {a ℓ₁ ℓ₂} (dt : DecTotalOrder a ℓ₁ ℓ₂) where
-
-open DecTotalOrder dt renaming (Carrier to X) using
-    (_≈_; _≤_; isEquivalence)
+open DecTotalOrder dt renaming (Carrier to X) using ()
 
 open import Level
 open import Data.List using (List ; _∷_ ; [] ; _++_)
